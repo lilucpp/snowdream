@@ -1,0 +1,28 @@
+# ssh 常见的连接
+
+## ssh docker
+[详见 docker 第5条](./docker.md)
+
+## ssh vbox中的虚拟机
+- ssh安装
+- vbox设置端口转发
+### 1. ssh 安装
+```txt
+sudo apt install openssh-server
+#修改sshd配置 vim /etc/ssh/sshd_config
+PubkeyAuthentication yes #启用公钥私钥配对认证方式
+PermitRootLogin yes #root能使用ssh登录
+port=22 #开启22端口
+RSAAuthentication yes #启用 RSA 认证
+
+#最后需要重启一下ssh服务
+service ssh restart
+```
+
+### 2. vbox设置端口转发
+virtual box中端口转接 在virtualbox上，点击对应虚拟机设置。点击网络、选中连接方式为“网络地址转换(NAT)”，点击高级，点击端口转发。  
+![alt port forward](./img/vbox-port-forward.png)
+
+配置端口转发，主机端口为xshell连接端口2200，映射为系统端口22，22为ssh默认端口，可以在"/etc/ssh/sshd_config"中进行修改。  
+![alt](./img/vbox-port-forward-2.png)
+

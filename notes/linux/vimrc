@@ -1,0 +1,13 @@
+syntax on
+set number
+set nocompatible
+set backspace=indent,eol,start
+set showmatch
+set tabstop=2
+set shiftwidth=2
+set autoindent
+set paste
+set ruler
+set laststatus=2
+set list
+set listchars=tab:>-,trail:-

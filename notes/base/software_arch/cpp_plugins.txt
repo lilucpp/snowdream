@@ -1,0 +1,7 @@
+OSGi Lite for C++：https://codeantenna.com/a/MpUB8USrvu
+http://www-vs.informatik.uni-ulm.de/proj/nosgi/
+https://blog.cppmicroservices.org/2012/03/29/osgi-and-c++/
+https://sof.tiddlyspot.com/
+https://commontk.org/index.php/Documentation/PluginFramework_DesignDoc
+https://www.codeproject.com/Articles/338268/COM-in-C
+https://stackoverflow.com/questions/65357626/cmake-cannot-find-boost-on-windows

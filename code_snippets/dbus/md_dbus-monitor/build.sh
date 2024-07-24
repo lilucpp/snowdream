@@ -1,0 +1,1 @@
+gcc -o a.out dbus-monitor.c dbus-print-message.c  tool-common.c   $(pkg-config dbus-1 --cflags --libs)
