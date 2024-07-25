@@ -15,7 +15,7 @@
 
 - [backup address](https://1drv.ms/u/s!AiOHW4QDJaFOgQBuv3-Kj6sTYVMH?e=GGfDUw)
 
-[cmake example readme](./cmake_example.md)
+- [cmake example readme](./cmake_example.md)
 
 ### note
 - 设置头文件/库目录
@@ -161,6 +161,20 @@
    -- Configuring done
    -- Generating done
    -- Build files have been written to: /.../usage-of-variables/_builds
+   ```
+- 使用环境变量做判断，交叉编译时使用。
+   ```cmake
+   if("$ENV{PLATFORM}" MATCHES "amd64")
+      message(STATUS ---arm64---")
+   elseif("$ENV{PLATFORM}" MATCHES "arm64")
+      message(STATUS "---arm64---")
+   elseif("$ENV{PLATFORM}" MATCHES "mips64")
+      message(STATUS "---mips64---")
+   elseif("$ENV{PLATFORM}" MATCHES "loongarch64")
+      message(STATUS "---loongarch64---")
+   else()
+      message(STATUS "unknown arch")
+   endif()
    ```
 
 ### 生成平台相关的编译
