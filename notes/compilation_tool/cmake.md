@@ -1,183 +1,278 @@
 # CMake
 
-## Guide
+## 教程
+
 - [bustub](https://github.com/cmu-db/bustub) **优先参考这个工程的写法。**
 - [CMake Primer](https://llvm.org/docs/CMakePrimer.html)
 - [**CMake Tutorial**](https://cmake.org/cmake/help/latest/guide/tutorial/index.html)
 - [**cmake_example**](#cmake-example)  这个是常用的示例
 - [CMake入门实战](https://github.com/wzpan/cmake-demo)
 
-
-
 ### cmake example
 
 - [github address](https://github.com/ttroy50/cmake-examples/tree/v2.0.0)
-
 - [backup address](https://1drv.ms/u/s!AiOHW4QDJaFOgQBuv3-Kj6sTYVMH?e=GGfDUw)
-
 - [cmake example readme](./cmake_example.md)
 
-### note
-- 设置头文件/库目录
-    ```md
-    include_directories(C:/PeanutLibV140/include)
-    link_directories(C:/PeanutLibV140/lib)
-    ```
+## cmake基础
+
+### 基本语法特性
+
+- 指定(参数1  参数2 ...)
+
+  - 参数使用括弧括起。
+  - 参数之间使用空格。
+- 指令是大小写无关的，参数和变量是大小写相关的。
+- 变量使用${}方式取值，但是在IF控制语句中是直接使用变量名。
+
+### 重要指令
+
+- cmake_minimum_required 指定CMake的最小版本要求。
+
+  ```cmake
+  cmake_minimum_required(VERSION 3)
+  ```
+- project定义工程名称，并可指定工程支持的语言。
+
+  ```cmake
+  project(HELLOWORLD)
+  ```
+- set显示的定义变量
+
+  `set(VAR [VALUE] [CACHE TYPE DOCSTRING [FORCE]])`
+
+  ```cmake
+  set(SRC hello.cpp main.cpp)
+  ```
+- include_directories 向工程添加多个特定的头文件搜索路径
+
+  `include_directories([AFTER|BEFORE] [SYSTEM] dir1 dir2)`
+- 
+- link_directories 向工程众添加多个特定的库文件搜索路径。
+
+  `link_directories(dir1 dir2)`
+
+  ```cmake
+  link_directories(./lib)
+  ```
+- add_library 生成库文件
+
+  `add_library(libname [SHARE|STATIC|MODULE] [EXCLUDE_FROM_ALL] source1 source2 ... sourceN)`
+
+  ```cmake
+  # libhello.so
+  set(SRC hello.cpp main.cpp)
+  add_library(hello SHARED ${SRC})
+  ```
+- add_compile_options 添加编译参数
+
+  ```cmake
+  add_compile_options(-Wall -std=c++11 -O2)
+  ```
+- add_executable生成可执行文件
+
+  ```cmake
+  add_executable(hello ${SRC})
+  ```
+- target_link_libraries 为target添加需要链接的库
+
+  target_link_libraries(target library1 library2 ...)
+- add_subdirectory 向当前工程添加子目录
+- aux_source_directory 发现一个目录下所有的源代码文件并将列表存储在一个变量中。
+
+  `aux_source_directory(dir VARIBLE)`
+
+  ```cmake
+  aux_source_directory(. SRC)
+  add_executable(main ${SRC})
+  ```
+
+### 常用变量
+
+- g++编译选项
+
+  ```cmake
+  # 在CMAKE_CXX_FLAGS编译选项后追加-std=c++11
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  ```
+- CMAKE_C_COMPILER：指定C编译器
+- CMAKE_CXX_COMPILER：指定C++编译器
+- CMAKE_BUILD_TYPE
+
+  ```cmake
+  # Debug/Release
+  set(CMAKE_BUILD_TYPE Debug)
+  ```
+
+## note
+
+### windows
+
 - 设置源码编码/字符集
-   ```md
-   if(MSVC)
-      add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-      add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-      add_definitions(-DUNICODE -D_UNICODE)
-   endif()
-   ```
 
+  ```md
+  if(MSVC)
+     add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+     add_definitions(-DUNICODE -D_UNICODE)
+  endif()
+  ```
 - [MT/MTD](https://stackoverflow.com/a/60844772/8330816)
-   ```cmake
-   if(MSVC)
-    add_compile_options(
-        $<$<CONFIG:>:/MT> #---------|
-        $<$<CONFIG:Debug>:/MTd> #---|-- Statically link the runtime libraries
-        $<$<CONFIG:Release>:/MT> #--|
-    )
-    endif()
-   ```
+
+  ```cmake
+  if(MSVC)
+   add_compile_options(
+       $<$<CONFIG:>:/MT> #---------|
+       $<$<CONFIG:Debug>:/MTd> #---|-- Statically link the runtime libraries
+       $<$<CONFIG:Release>:/MT> #--|
+   )
+   endif()
+  ```
 - windows设置动态库设置导出库
-   ```cmake
-   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-   ```
--  打印日志message
-    ```cmake
-    set(var_name var1)
-    message("var_name= ${var_name}")
 
-    set(${var_name} foo) # same as "set(var1 foo)"
-    message("var1= ${var1}")
+  ```cmake
+  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+  ```
 
-    set(${${var_name}}_var bar) # same as "set(foo_var bar)"
-    message("foo_var= ${foo_var}")
-    ```
--  list
-   ```cmake
-   set(my_list a b c d)
-   set(a 1 2 3)
-   set(b 4 5 6)
-   set(c 7 8 9)
-   foreach(list_name IN LISTS my_list)
-       foreach(val IN LISTS ${list_name})
-           message("${val} ")
-       endforeach()
+### 进阶语法
+
+- 打印日志message
+
+  ```cmake
+  set(var_name var1)
+  message("var_name= ${var_name}")
+
+  set(${var_name} foo) # same as "set(var1 foo)"
+  message("var1= ${var1}")
+
+  set(${${var_name}}_var bar) # same as "set(foo_var bar)"
+  message("foo_var= ${foo_var}")
+  ```
+- list
+
+  ```cmake
+  set(my_list a b c d)
+  set(a 1 2 3)
+  set(b 4 5 6)
+  set(c 7 8 9)
+  foreach(list_name IN LISTS my_list)
+      foreach(val IN LISTS ${list_name})
+          message("${val} ")
+      endforeach()
+  endforeach()
+
+  foreach(list_name IN LISTS my_list)
+      message("${${list_name}}")
+  endforeach()
+
+  foreach(var IN ITEMS foo bar baz)
+     message(${var})
+  endforeach()
+
+  foreach(var IN LISTS my_list ITEMS out_of_bounds)
+  message(${var})
+  endforeach()
+  ```
+- range
+
+  ```cmake
+  foreach(val RANGE 0 5 2)
+     message("${val}")
    endforeach()
-   
-   foreach(list_name IN LISTS my_list)
-       message("${${list_name}}")
-   endforeach()
-   
-   foreach(var IN ITEMS foo bar baz)
-      message(${var})
-   endforeach()
-   
-   foreach(var IN LISTS my_list ITEMS out_of_bounds)
-   message(${var})
-   endforeach()
-   ```
--  range
-   ```cmake
-   foreach(val RANGE 0 5 2)
+  ```
+- function
+
+  ```cmake
+  function(add_deps target)
+    message("argn=${ARGN}\n")
+
+    foreach(val IN ITEMS ${ARGV})
       message("${val}")
     endforeach()
-   ```
--  function
-   ```cmake
-   function(add_deps target)
-     message("argn=${ARGN}\n")
 
-     foreach(val IN ITEMS ${ARGV})
-       message("${val}")
-     endforeach()
-     
-     if(<condition>)
-       message("do stuff")
-     elseif(<condition>)
-       message("do other stuff")
-     else()
-       message("do other other stuff")
-     endif()
+    if(<condition>)
+      message("do stuff")
+    elseif(<condition>)
+      message("do other stuff")
+    else()
+      message("do other other stuff")
+    endif()
 
-   endfunction()
-   ```
--  遍历变量
-   ```cmake
-   get_cmake_property(_variableNames VARIABLES)
-   foreach (_variableName ${_variableNames})
-     message(STATUS "${_variableName}=${${_variableName}}")
-   endforeach()
-   ```
+  endfunction()
+  ```
+- 遍历变量
 
+  ```cmake
+  get_cmake_property(_variableNames VARIABLES)
+  foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+  endforeach()
+  ```
 - initial cache and force
 
-   如果定义了大量缓存变量，使用-D不太方便，往往使用-C
+  如果定义了大量缓存变量，使用-D不太方便，往往使用-C
 
-   ```shell
-   # cache.cmake
-   
-   set(A "123" CACHE STRING "")
-   set(B "456" CACHE STRING "")
-   set(C "789" CACHE STRING "")
-   
-   # CMakeLists.txt
-   cmake_minimum_required(VERSION 2.8)
-   project(foo NONE)
-   
-   message("A: ${A}")
-   message("B: ${B}")
-   message("C: ${C}")
-   
-   [usage-of-variables]> rm -rf _builds
-   [usage-of-variables]> cmake -C initial-cache/cache.cmake -Hinitial-cache -B_builds
-   loading initial cache file initial-cache/cache.cmake
-   A: 123
-   B: 456
-   C: 789
-   -- Configuring done
-   -- Generating done
-   -- Build files have been written to: /.../usage-of-variables/_builds
-   ```
+  ```shell
+  # cache.cmake
 
-   force: 被认为是设计不良的cmake 代码
+  set(A "123" CACHE STRING "")
+  set(B "456" CACHE STRING "")
+  set(C "789" CACHE STRING "")
 
-   If you want to set cache variable even if it’s already present in cache file you can add `FORCE`:
+  # CMakeLists.txt
+  cmake_minimum_required(VERSION 2.8)
+  project(foo NONE)
 
-   ```shell
-   cmake_minimum_required(VERSION 2.8)
-   project(foo NONE)
-   
-   set(A "123" CACHE STRING "" FORCE)
-   message("A: ${A}")
-   
-   [usage-of-variables]> rm -rf _builds
-   [usage-of-variables]> cmake -DA=456 -Hforce -B_builds
-   A: 123
-   -- Configuring done
-   -- Generating done
-   -- Build files have been written to: /.../usage-of-variables/_builds
-   ```
+  message("A: ${A}")
+  message("B: ${B}")
+  message("C: ${C}")
+
+  [usage-of-variables]> rm -rf _builds
+  [usage-of-variables]> cmake -C initial-cache/cache.cmake -Hinitial-cache -B_builds
+  loading initial cache file initial-cache/cache.cmake
+  A: 123
+  B: 456
+  C: 789
+  -- Configuring done
+  -- Generating done
+  -- Build files have been written to: /.../usage-of-variables/_builds
+  ```
+
+  force: 被认为是设计不良的cmake 代码
+
+  If you want to set cache variable even if it’s already present in cache file you can add `FORCE`:
+
+  ```shell
+  cmake_minimum_required(VERSION 2.8)
+  project(foo NONE)
+
+  set(A "123" CACHE STRING "" FORCE)
+  message("A: ${A}")
+
+  [usage-of-variables]> rm -rf _builds
+  [usage-of-variables]> cmake -DA=456 -Hforce -B_builds
+  A: 123
+  -- Configuring done
+  -- Generating done
+  -- Build files have been written to: /.../usage-of-variables/_builds
+  ```
 - 使用环境变量做判断，交叉编译时使用。
-   ```cmake
-   if("$ENV{PLATFORM}" MATCHES "amd64")
-      message(STATUS ---arm64---")
-   elseif("$ENV{PLATFORM}" MATCHES "arm64")
-      message(STATUS "---arm64---")
-   elseif("$ENV{PLATFORM}" MATCHES "mips64")
-      message(STATUS "---mips64---")
-   elseif("$ENV{PLATFORM}" MATCHES "loongarch64")
-      message(STATUS "---loongarch64---")
-   else()
-      message(STATUS "unknown arch")
-   endif()
-   ```
 
-### 生成平台相关的编译
+  ```cmake
+  if("$ENV{PLATFORM}" MATCHES "amd64")
+     message(STATUS ---arm64---")
+  elseif("$ENV{PLATFORM}" MATCHES "arm64")
+     message(STATUS "---arm64---")
+  elseif("$ENV{PLATFORM}" MATCHES "mips64")
+     message(STATUS "---mips64---")
+  elseif("$ENV{PLATFORM}" MATCHES "loongarch64")
+     message(STATUS "---loongarch64---")
+  else()
+     message(STATUS "unknown arch")
+  endif()
+  ```
+
+## 生成平台相关的编译
 
 1. windows:
 
@@ -192,7 +287,7 @@
 
    **不指定--config 默认是debug。**
 
-   **-H"source_path" -B"Build path"**，可以简写成`cmake .. -G "Visual Studio 14 2015 Win64" -T v140_xp`。
+   **-H"source_path" -B"Build path"**，可以简写成 `cmake .. -G "Visual Studio 14 2015 Win64" -T v140_xp`。
 
    ```txt
    cmake --help
@@ -219,7 +314,6 @@
                                     mingw32-make.
    ...
    ```
-
 2. linux
 
    ```shell
@@ -245,20 +339,7 @@
 
 使用make VERBOSE=1 可以查看详细编译过程。
 
-
-   What is RPATH?
-
-   If an executable "foo" links to the shared library "bar", the library "bar" has to be found and loaded when the executable "foo" is executed. This is the job of the linker, under Linux this is usually ld.so. The linker searches a set of directories for the library bar, which will under most UNIXes have the name libbar.so. The linker will search the libraries in the following directories in the given order:
-
-   - RPATH - a list of directories which is linked into the executable, supported on most UNIX systems. It is ignored if RUNPATH is present.
-   - LD_LIBRARY_PATH - an environment variable which holds a list of directories
-   - RUNPATH - same as RPATH, but searched after LD_LIBRARY_PATH, supported only on most recent UNIX systems, e.g. on most current Linux systems
-   - /etc/ld.so.conf - configuration file for ld.so which lists additional library directories
-   - builtin directories - basically /lib and /usr/lib
-  
-  
-
-### Other
+## Other
 
 [Useful Variables](https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/Useful-Variables)
 
