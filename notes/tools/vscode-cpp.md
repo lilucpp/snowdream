@@ -1,8 +1,49 @@
 # 使用vscode配置c++开发环境
 
+## g++
+
+### 编译过程
+
+```txt
+-E: 预处理
+-S：编译为汇编语言
+-c：编译为机器码
+```
+
+pre-processing: `g++ -E  test.cpp -o test.i `
+
+compiling: `g++ -S test.i  -o test.s`
+
+assembling: `g++ -c test.s -o test.o`
+
+linking: `g++ test.o -o test`
+
+### 编译参数
+
+```txt
+-g: 带调试信息
+-O[n]: 优化。n默认为1。0：不做优化 1：默认优化，减小代码的长度和执行事件。2：除了1的优化外，还进行一些额外的调整。如指令调整。 3：循环展开和一些特性相关的优化。
+-l: 指定程序要链接的库。
+-L：库文件目录。
+-I: 头文件搜索目录。
+-Wall: 打印警告信息。
+-werror: 警告信息转为错误信息，终止编译过程。
+-w: 关闭警告信息。
+-std=: 指定编译标准，如c++11。
+-o: 指定输出文件名。
+-D: 定义宏，如-DDEBUG。
+-v: 打印出编译详情。
+```
+
+## gdb
+
+[../linux/gdb](../linux/gdb.md)
+
 ## 插件
 
 - c/c++
+- CMake
+- CMake Tools
 - cpplint
 - Remote-SSH
 
@@ -14,13 +55,13 @@
 
 ## 格式化
 
-在 VS Code 中安装了 C/C++ 插件后会自动带上格式化工具 clang-format。windows上`alt+shift+f`可对文件进行格式化。
+在 VS Code 中安装了 C/C++ 插件后会自动带上格式化工具 clang-format。windows上 `alt+shift+f`可对文件进行格式化。
 
 ## 代码风格检查
 
 使用cpplint检查代码风格。
 
-需要安装python3，然后使用`pip install cpplint`进行安装。
+需要安装python3，然后使用 `pip install cpplint`进行安装。
 
 然后进行插件设置：
 
@@ -28,7 +69,7 @@ cpplint.cpplintPatp、cpplint.lineLength、cpplint.excludes等。
 
 ## 版权声明
 
-可使用vscode自身的snipper。`文件-首选项-配置用户代码片段`。  
+可使用vscode自身的snipper。`文件-首选项-配置用户代码片段`。
 
 ```json
 {
@@ -70,25 +111,25 @@ cpplint.cpplintPatp、cpplint.lineLength、cpplint.excludes等。
 }
 ```
 
-添加头文件是输入`header`或者`copyright`就可以插入声明。  
+添加头文件是输入 `header`或者 `copyright`就可以插入声明。
 
 ## 代码静态检查。
 
-检查工具有cppcheck、clang-tidy。此次说明的时clang-tidy。  
+检查工具有cppcheck、clang-tidy。此次说明的时clang-tidy。
 
-vscode中不需要安装clang-tidy， clang-tidy已集成在c++扩展中。  
+vscode中不需要安装clang-tidy， clang-tidy已集成在c++扩展中。
 
 ### vs code 中运行clang-tidy
 
 #### 手动运行
 
-如果需要手动运行clang-tidy，请打开”Command Palette (Ctrl + Shift + P)”，并输入”Run Code Analysis”。你可以直接在单个文件上执行clang-tidy，也可以在所有已打开的文件上执行，也可以在整个工作区上执行。  
+如果需要手动运行clang-tidy，请打开”Command Palette (Ctrl + Shift + P)”，并输入”Run Code Analysis”。你可以直接在单个文件上执行clang-tidy，也可以在所有已打开的文件上执行，也可以在整个工作区上执行。
 
-如果有一些文件夹你不想在上面执行clang-tidy，则可以将它们的路径添加到”Clang Tidy: Exclude”配置项中(位于配置文件settings.json中的C_Cpp.codeAnalysis.exclude)。  
+如果有一些文件夹你不想在上面执行clang-tidy，则可以将它们的路径添加到”Clang Tidy: Exclude”配置项中(位于配置文件settings.json中的C_Cpp.codeAnalysis.exclude)。
 
 #### 自动运行
 
-使用`ctrl+,`打开ui设置，然后搜索”code analysis”关键字来找到所有clang-tidy相关的设置项，然后将”Clang Tidy: Enabled”设置为true。
+使用 `ctrl+,`打开ui设置，然后搜索”code analysis”关键字来找到所有clang-tidy相关的设置项，然后将”Clang Tidy: Enabled”设置为true。
 
 ### 检查规则
 
@@ -107,6 +148,7 @@ vscode中不需要安装clang-tidy， clang-tidy已集成在c++扩展中。
 // todo
 
 #### linux root下启动
+
 ```
 to open vs-code as root, open terminal and:
 
@@ -123,15 +165,9 @@ make sure you check this too: https://stackoverflow.com/a/68637450/10606346
 - 在ssh-config文件中输入主机地址和用户名。
 - 连接，在终端中输入密码登录。
 
-
-
-
-
 ## 其他
 
-- 在windows上可以使用`where cl.exe` 找到编译器问题。如`IntelliSense配置-编译器路径`时。
+- 在windows上可以使用 `where cl.exe` 找到编译器问题。如 `IntelliSense配置-编译器路径`时。
 - tidy或cpplint出现了错误，可以在下方的问题中查看。
-
-- 提示找不到boost头文件，可以在`IntelliSense-包含路径`中设置第三方库路径。
-
+- 提示找不到boost头文件，可以在 `IntelliSense-包含路径`中设置第三方库路径。
 - vbox的虚拟机开启ssh后需要设置端口转发，然后使用127.0.0.1:local_port连接。
