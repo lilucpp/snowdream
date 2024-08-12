@@ -80,11 +80,22 @@
 - add_subdirectory 向当前工程添加子目录
 - aux_source_directory 发现一个目录下所有的源代码文件并将列表存储在一个变量中。
 
-  `aux_source_directory(dir VARIBLE)`
+  `aux_source_directory(dir VARIBLE) `
 
   ```cmake
   aux_source_directory(. SRC)
   add_executable(main ${SRC})
+  ```
+- add_definitions 定义编译宏
+
+  ```cmake
+  # c++
+  #ifdef DEBUG
+  std::cout << "debug...\n";
+  #endif
+
+  # cmake 
+  add_definitions(-DDEBUG)
   ```
 
 ### 常用变量
