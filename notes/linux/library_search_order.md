@@ -59,7 +59,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--disable-new-dtags -Wl,-rpath,'$ORI
 
 ## 工程实践
 
-LD_DEBUG=libs  progname：可以查看动态库搜索过程。`<br>`
+LD_DEBUG=libs  progname：可以查看动态库搜索过程，一般把输出打印到文件，方便查看。 `LD_DEBUG=libs  progname &> 1.txt` 。  
+
+qt中加载插件也有个类似的环境变了， export QT_DEBUG_PLUGINS=1   然后执行qt进程，可以打印出插件加载过程。  
 
 **如果a.out 依赖 a.so ，a.so依赖b.so，可以为a.so增加rpath。**
 
@@ -85,6 +87,11 @@ LD_DEBUG=libs  progname：可以查看动态库搜索过程。`<br>`
 - 可执行文件中的runpath
 - 检查/etc/ld.so.cache文件以确认是否包含了库相关的条目
 - 系统搜索目录如/lib、/usr/lib、/usr/local/lib
+
+注意事项：
+
+- 如果子依赖也设置了rpath，那么子依赖的rpath优先查找。这样会导致一个后果，如果主进程依赖一个库，子依赖也依赖这个库，两个版本不一致时容易出问题。  如主进程依赖当前目录下的一个libssl.so， 子依赖也依赖libssl.so， 如果这是子依赖设置的rpath路径是系统的某个目录，就会使用系统libssl.so。可能导致主进程无法启动。
+  可以尝试使用LD_LIBRARY_PATH的形式，或者LD_PRELOAD=/xx.so   a.out
 
 ## preload hook
 

@@ -33,3 +33,8 @@
   peanut@peanut-vm:~/Desktop$ 
   peanut@peanut-vm:~/Desktop$ 
   ```
+
+4. uos是否锁屏
+   ```shell
+   dbus-send --session --print-reply --dest=com.deepin.SessionManager /com/deepin/SessionManager org.freedesktop.DBus.Properties.Get string:"com.deepin.SessionManager" string:"Locked"
+   ```
