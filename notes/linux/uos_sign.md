@@ -23,6 +23,9 @@
     进入要签名的deb包路径的文件夹下，打开终端
     $ deepin-elf-sign-deb 要签名的deb包路径
     举例：deepin-elf-sign-deb com.xxx.xxx
+
+    # 单个文件签名
+    deepin-elf-sign -f ./test -c /usr/share/ca-certificates/deepin/private/priv.crt  -k   /usr/share/ca-certificates/deepin/private/priv.key
     ```
 
 - deb包签名-验证签名。（这一步可以不做）
