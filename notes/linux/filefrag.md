@@ -55,6 +55,8 @@ count=1：只读取 1 个块（512 字节）。
 2>/dev/null：隐藏 dd 的标准错误输出。
 
 dd if=/dev/nve0n1p5 bs=512 skip=$((23106670592 / 512)) count=1 2>/dev/null | hexdump -C
+
+dd if=/dev/nve0n1p5 bs=4096 skip=5641277 count=1 2>/dev/null | hexdump -C
 ```
 ```txt
 小常识：
@@ -65,10 +67,19 @@ dd 跳过数据块：hexdump 会逐字节处理数据，而 dd 的 skip 选项�
 ```
 
 5、清除文件  
-ssd上可以使用O_DRECT+O_SYNC进行清除。不过这样清除后，使用dd hexdujmp查看会发现文件内容没有被清除，这是因为ssd的缓存机制。有两个方法可以解决这个问题：
+ssd上可以使用O_DRECT+O_SYNC进行清除。不过这样清除后，使用dd hexdujmp查看会发现文件内容没有被清除，这是因为ssd的缓存机制。有几个方法可以解决这个问题：
+
 - 使用nvme flush /dev/nvme0n1 刷新缓存。
 - 重启电脑后，文件内容会被清除。
+- dd 使用标志 iflag=direct。
+  ```shell
+  dd if=/dev/nve0n1p5 bs=4096 skip=5641277 count=1 iflag=direct 2>/dev/null | hexdump -C
+  ```
+- 清除缓存
+  ```shell
+  echo 3 > /proc/sys/vm/drop_caches
+  ```
 
-建议使用第二种方案，第一种可能对SSD使用寿命有影响。
+建议使用第二种方案，第一种可能对SSD使用寿命有影响。也可以使用方案三、四快速验证。
 
 文件名的清除可以考虑srm的方案，假如old_name的basename长度是len。 old_name -> new_name(len, 0) -> new_name1(len-1, 0) -> ... -> new_nameN(0)。使用递减的方式清除文件名。最后再删除。 
