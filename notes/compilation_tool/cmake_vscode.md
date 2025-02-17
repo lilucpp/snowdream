@@ -91,5 +91,8 @@
 }
 ```
 
+3、 root下启动
+`sudo code --user-data-dir="~/.vscode-root" --no-sandbox`
+
 资料：
 [1] https://blog.csdn.net/liuqixuan1994/article/details/125394642
